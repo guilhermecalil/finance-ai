@@ -1,5 +1,7 @@
+import { Button } from "./_components/ui/button";
+
 const Home = () => {
-  return <h1>Tela Inicial</h1>;
+  return <Button>Página Inicial</Button>;
 };
 
 export default Home;
