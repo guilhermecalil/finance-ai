@@ -17,6 +17,8 @@ const SubscriptionPage = async () => {
   const user = await clerkClient().users.getUser(userId);
   const currentMonthTransactions = await getCurrenceMonthTransactions();
   const hasPremiumPlan = user.publicMetadata.subscriptionPlan == "premium";
+  const hasProPlan = user.publicMetadata.subscriptionPlan == "pro";
+  const hasBusinessPlan = user.publicMetadata.subscriptionPlan == "business";
 
   return (
     <>
@@ -82,6 +84,64 @@ const SubscriptionPage = async () => {
                 <p>Relatórios de IA</p>
               </div>
               <AcquirePlanButton />
+            </CardContent>
+          </Card>
+
+          <Card className="w-full max-w-[450px]">
+            <CardHeader className="relative border-b border-solid py-8">
+              {hasProPlan && (
+                <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
+                  Ativo
+                </Badge>
+              )}
+              <h2 className="text-center text-2xl font-semibold">Plano PRO</h2>
+              <div className="flex items-center justify-center gap-3">
+                {/* <span className="text-4xl">R$</span>
+                <span className="text-6xl font-semibold">19</span> */}
+                <span className="text-2xl text-muted-foreground">EM BREVE</span>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-6 py-8">
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>...</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>...</p>
+              </div>
+              {/* <AcquirePlanButton /> */}
+            </CardContent>
+          </Card>
+
+          <Card className="w-full max-w-[450px]">
+            <CardHeader className="relative border-b border-solid py-8">
+              {hasBusinessPlan && (
+                <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
+                  Ativo
+                </Badge>
+              )}
+              <h2 className="text-center text-2xl font-semibold">
+                Plano Empresarial
+              </h2>
+              <div className="flex items-center justify-center gap-3">
+                {/* <span className="text-4xl">R$</span>
+                <span className="text-6xl font-semibold">19</span> */}
+                <span className="text-2xl text-muted-foreground">EM BREVE</span>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-6 py-8">
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>...</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>...</p>
+              </div>
+              {/* <AcquirePlanButton /> */}
             </CardContent>
           </Card>
         </div>

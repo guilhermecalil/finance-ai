@@ -37,9 +37,14 @@ const SummaryCard = ({
           }).format(amount)}
         </p>
 
-        {size === "large" && (
-          <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
-        )}
+        {/* O botão "Adicionar transação" aparece apenas em telas grandes (lg) */}
+        <div className="hidden lg:block">
+          {size === "large" && (
+            <AddTransactionButton
+              userCanAddTransaction={userCanAddTransaction}
+            />
+          )}
+        </div>
       </CardContent>
     </Card>
   );
