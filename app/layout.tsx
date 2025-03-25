@@ -1,11 +1,11 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import type { Metadata } from "next";
-import { Mulish } from "next/font/google";
+import { Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const mulish = Mulish({
+const manrope = Manrope({
   subsets: ["latin-ext"],
 });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${mulish.className} dark antialiased`}>
+      <body className={`${manrope.className} dark antialiased`}>
         <ClerkProvider
           appearance={{
             baseTheme: dark,

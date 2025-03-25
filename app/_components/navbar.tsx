@@ -15,7 +15,7 @@ const Navbar = () => {
     <nav className="flex items-center justify-between border-b border-solid px-6 py-4">
       {/* LADO ESQUERDO */}
       <div className="flex items-center gap-6">
-        <Image src="/logo.svg" width={150} height={30} alt="Finance AI logo" />
+        <Image src="/logo.svg" width={165} height={50} alt="MoneyVision logo" />
 
         {/* LINKS - VISÍVEIS APENAS NO DESKTOP */}
         <div className="hidden items-center gap-6 md:flex">

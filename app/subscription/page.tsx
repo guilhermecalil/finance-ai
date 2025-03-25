@@ -16,9 +16,9 @@ const SubscriptionPage = async () => {
 
   const user = await clerkClient().users.getUser(userId);
   const currentMonthTransactions = await getCurrenceMonthTransactions();
-  const hasPremiumPlan = user.publicMetadata.subscriptionPlan == "premium";
-  const hasProPlan = user.publicMetadata.subscriptionPlan == "pro";
-  const hasBusinessPlan = user.publicMetadata.subscriptionPlan == "business";
+  const hasPremiumPlan = user.publicMetadata.subscriptionPlan === "premium";
+  const hasEssencialPlan = user.publicMetadata.subscriptionPlan === "essencial";
+  const hasElitePlan = user.publicMetadata.subscriptionPlan === "elite";
 
   return (
     <>
@@ -50,9 +50,71 @@ const SubscriptionPage = async () => {
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Dashboard financeiro</p>
+              </div>
+              <div className="flex items-center gap-2">
                 <XIcon />
                 <p>Relatórios de IA</p>
               </div>
+              <div className="flex items-center gap-2">
+                <XIcon />
+                <p>Relatórios financeiros</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <XIcon />
+                <p>Alertas personalizados</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <XIcon />
+                <p>Acesso antecipado a novos recursos</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="w-full max-w-[450px]">
+            <CardHeader className="relative border-b border-solid py-8">
+              {hasEssencialPlan && (
+                <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
+                  Ativo
+                </Badge>
+              )}
+              <h2 className="text-center text-2xl font-semibold">
+                Plano Essencial
+              </h2>
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-4xl">R$</span>
+                <span className="text-6xl font-semibold">19,90</span>
+                <span className="text-2xl text-muted-foreground">/mês</span>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-6 py-8">
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Dashboard financeiro</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Transações mensais Ilimitadas</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Relatórios financeiros</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <XIcon />
+                <p>Chatbot via WhatsApp</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <XIcon />
+                <p>Alertas personalizados</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <XIcon />
+                <p>Acesso antecipado a novos recursos</p>
+              </div>
+              <AcquirePlanButton />
             </CardContent>
           </Card>
 
@@ -69,7 +131,7 @@ const SubscriptionPage = async () => {
               </h2>
               <div className="flex items-center justify-center gap-3">
                 <span className="text-4xl">R$</span>
-                <span className="text-6xl font-semibold">19</span>
+                <span className="text-6xl font-semibold">39,90</span>
                 <span className="text-2xl text-muted-foreground">/mês</span>
               </div>
             </CardHeader>
@@ -77,11 +139,32 @@ const SubscriptionPage = async () => {
             <CardContent className="space-y-6 py-8">
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
-                <p>Transações ilimitadas</p>
+                <p>Dashboard financeiro</p>
               </div>
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
-                <p>Relatórios de IA</p>
+                <p>Transações mensais ilimitadas</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Relatórios financeiros</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>
+                  Chatbot via WhatsApp
+                  <span className="font-bold">
+                    (limite de 50 transações/mês)
+                  </span>
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Alertas personalizados</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Acesso antecipado a novos recursos</p>
               </div>
               <AcquirePlanButton />
             </CardContent>
@@ -89,59 +172,50 @@ const SubscriptionPage = async () => {
 
           <Card className="w-full max-w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
-              {hasProPlan && (
-                <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
-                  Ativo
-                </Badge>
-              )}
-              <h2 className="text-center text-2xl font-semibold">Plano PRO</h2>
-              <div className="flex items-center justify-center gap-3">
-                {/* <span className="text-4xl">R$</span>
-                <span className="text-6xl font-semibold">19</span> */}
-                <span className="text-2xl text-muted-foreground">EM BREVE</span>
-              </div>
-            </CardHeader>
-
-            <CardContent className="space-y-6 py-8">
-              <div className="flex items-center gap-2">
-                <CheckIcon className="text-primary" />
-                <p>...</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckIcon className="text-primary" />
-                <p>...</p>
-              </div>
-              {/* <AcquirePlanButton /> */}
-            </CardContent>
-          </Card>
-
-          <Card className="w-full max-w-[450px]">
-            <CardHeader className="relative border-b border-solid py-8">
-              {hasBusinessPlan && (
+              {hasElitePlan && (
                 <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
                   Ativo
                 </Badge>
               )}
               <h2 className="text-center text-2xl font-semibold">
-                Plano Empresarial
+                Plano Elite
               </h2>
               <div className="flex items-center justify-center gap-3">
-                {/* <span className="text-4xl">R$</span>
-                <span className="text-6xl font-semibold">19</span> */}
-                <span className="text-2xl text-muted-foreground">EM BREVE</span>
+                <span className="text-4xl">R$</span>
+                <span className="text-6xl font-semibold">79,90</span>
+                <span className="text-2xl text-muted-foreground">/mês</span>
               </div>
             </CardHeader>
 
             <CardContent className="space-y-6 py-8">
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
-                <p>...</p>
+                <p>Dashboard financeiro</p>
               </div>
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
-                <p>...</p>
+                <p>Transações mensais ilimitadas</p>
               </div>
-              {/* <AcquirePlanButton /> */}
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>
+                  Relatórios financeiros
+                  <span className="font-bold">(COM IA AVANÇADA)</span>
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Chatbot via WhatsApp</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Alertas personalizados</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="text-primary" />
+                <p>Acesso antecipado a novos recursos</p>
+              </div>
+              <AcquirePlanButton />
             </CardContent>
           </Card>
         </div>
