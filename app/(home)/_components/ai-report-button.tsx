@@ -88,7 +88,8 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
             <DialogHeader>
               <DialogTitle>Relatório IA</DialogTitle>
               <DialogDescription>
-                Você precisa de um plano premium para gerar relatórios com IA.
+                Para acessar relatórios avançados com IA, adquira um dos nossos
+                planos superiores.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -97,7 +98,7 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
               </DialogClose>
 
               <Button asChild>
-                <Link href="/subscription">Assinar plano premium</Link>
+                <Link href="/subscription">Adquirir plano completo</Link>
               </Button>
             </DialogFooter>
           </>

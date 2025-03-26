@@ -19,6 +19,7 @@ const SubscriptionPage = async () => {
   const hasPremiumPlan = user.publicMetadata.subscriptionPlan === "premium";
   const hasEssencialPlan = user.publicMetadata.subscriptionPlan === "essencial";
   const hasElitePlan = user.publicMetadata.subscriptionPlan === "elite";
+  // const hasFreePlan = user.publicMetadata.subscriptionPlan === null;
 
   return (
     <>
@@ -32,6 +33,11 @@ const SubscriptionPage = async () => {
           {/* Plano Básico */}
           <Card className="w-full max-w-[450px]">
             <CardHeader className="border-b border-solid py-8">
+              {/* {hasFreePlan && (
+                <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
+                  Ativo
+                </Badge>
+              )} */}
               <h2 className="text-center text-2xl font-semibold">
                 Plano Básico
               </h2>
@@ -114,7 +120,7 @@ const SubscriptionPage = async () => {
                 <XIcon />
                 <p>Acesso antecipado a novos recursos</p>
               </div>
-              <AcquirePlanButton />
+              <AcquirePlanButton planType={"essencial"} />
             </CardContent>
           </Card>
 
@@ -166,7 +172,7 @@ const SubscriptionPage = async () => {
                 <CheckIcon className="text-primary" />
                 <p>Acesso antecipado a novos recursos</p>
               </div>
-              <AcquirePlanButton />
+              <AcquirePlanButton planType={"premium"} />
             </CardContent>
           </Card>
 
@@ -215,7 +221,7 @@ const SubscriptionPage = async () => {
                 <CheckIcon className="text-primary" />
                 <p>Acesso antecipado a novos recursos</p>
               </div>
-              <AcquirePlanButton />
+              <AcquirePlanButton planType={"elite"} />
             </CardContent>
           </Card>
         </div>

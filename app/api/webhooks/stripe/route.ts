@@ -26,40 +26,63 @@ export const POST = async (request: Request) => {
 
   switch (event.type) {
     case "invoice.paid": {
-      // Atualizar o usuário com seu novo plano
-      const { customer, subscription, subscription_details } =
-        event.data.object;
+      const { customer, subscription } = event.data.object;
 
-      const clerkUserId = subscription_details?.metadata?.clerk_user_id;
+      // Garantir que subscription seja uma string (ID)
+      const subscriptionId =
+        typeof subscription === "string" ? subscription : subscription?.id;
 
+      if (!subscriptionId) {
+        return NextResponse.error();
+      }
+
+      // Buscar detalhes da assinatura no Stripe
+      const subscriptionDetails =
+        await stripe.subscriptions.retrieve(subscriptionId);
+
+      const clerkUserId = subscriptionDetails.metadata?.clerk_user_id;
       if (!clerkUserId) {
         return NextResponse.error();
       }
 
-      await clerkClient().users.updateUser(clerkUserId, {
+      // Pegando o plano adquirido
+      const priceId = subscriptionDetails.items.data[0]?.price.id;
+
+      let subscriptionPlan = null; // Padrão para evitar erro
+
+      if (priceId === process.env.STRIPE_PREMIUM_PLAN_PRICE_ID) {
+        subscriptionPlan = "premium";
+      } else if (priceId === process.env.STRIPE_ELITE_PLAN_PRICE_ID) {
+        subscriptionPlan = "elite";
+      } else if (priceId === process.env.STRIPE_ESSENCIAL_PLAN_PRICE_ID) {
+        subscriptionPlan = "essencial";
+      }
+
+      await clerkClient.users.updateUser(clerkUserId, {
         privateMetadata: {
           stripeCustomerId: customer,
-          stripeSubscriptionId: subscription,
+          stripeSubscriptionId: subscriptionId, // Agora garantido como string
         },
         publicMetadata: {
-          subscriptionPlan: "premium",
+          subscriptionPlan,
         },
       });
+
       break;
     }
 
     case "customer.subscription.deleted": {
-      // Remover plano premium do usuário
+      // Remover plano do usuário
       const subscription = await stripe.subscriptions.retrieve(
         event.data.object.id,
       );
 
-      const clerkUserId = subscription.metadata.clerk_user_id;
+      const clerkUserId = subscription.metadata?.clerk_user_id;
       if (!clerkUserId) {
         return NextResponse.error();
       }
 
-      await clerkClient().users.updateUser(clerkUserId, {
+      await clerkClient.users.updateUser(clerkUserId, {
         privateMetadata: {
           stripeCustomerId: null,
           stripeSubscriptionId: null,

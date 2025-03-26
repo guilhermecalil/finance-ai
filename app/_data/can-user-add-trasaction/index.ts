@@ -8,7 +8,11 @@ export const canUserAddTransaction = async () => {
   }
 
   const user = await clerkClient().users.getUser(userId);
-  if (user.publicMetadata.subscriptionPlan === "premium") {
+  if (
+    user.publicMetadata.subscriptionPlan === "premium" ||
+    user.publicMetadata.subscriptionPlan === "essencial" ||
+    user.publicMetadata.subscriptionPlan === "elite"
+  ) {
     return true;
   }
 
