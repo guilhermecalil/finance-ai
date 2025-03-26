@@ -162,3 +162,27 @@ body {
     @apply h-full bg-background text-foreground;
   }
 }
+/* Customização do scroll */
+::-webkit-scrollbar {
+  width: 8px; /* Largura do scroll */
+  height: 8px; /* Altura do scroll horizontal */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #4caf50; /* Cor do botão do scroll */
+  border-radius: 4px; /* Arredondamento do botão do scroll */
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 4px; /* Arredondamento do track */
+}
+
+/* Scroll para o eixo horizontal */
+::-webkit-scrollbar-horizontal {
+  height: 8px; /* Espessura do scroll horizontal */
+}
+
+/* Scroll para o eixo vertical */
+::-webkit-scrollbar-vertical {
+  width: 8px; /* Espessura do scroll vertical */
+}

@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import AddTransactionButton from "../_components/add-transaction-button";
 import Navbar from "../_components/navbar";
 import { DataTable } from "../_components/ui/data-table";
-import { ScrollArea } from "../_components/ui/scroll-area";
 import { canUserAddTransaction } from "../_data/can-user-add-trasaction";
 import { db } from "../_lib/prisma";
 import { transactionColumns } from "./_columns";
@@ -29,18 +28,24 @@ const TransactionsPage = async () => {
   return (
     <>
       <Navbar />
-      <div className="flex flex-col space-y-6 overflow-hidden p-6">
+      <div className="flex flex-col space-y-6 p-6">
         {/* TÍTULO E BOTÃO */}
         <div className="flex w-full items-center justify-between">
           <h1 className="text-2xl font-bold">Transações</h1>
           <AddTransactionButton userCanAddTransaction={userCanAddTransaction} />
         </div>
-        <ScrollArea className="h-full">
-          <DataTable
-            columns={transactionColumns}
-            data={JSON.parse(JSON.stringify(transactions))}
-          />
-        </ScrollArea>
+
+        {/* Contêiner para rolagem horizontal com width ajustado */}
+        <div className="overflow-x-auto">
+          <div className="min-w-[1200px]">
+            {" "}
+            {/* Definindo a largura mínima da tabela */}
+            <DataTable
+              columns={transactionColumns}
+              data={JSON.parse(JSON.stringify(transactions))}
+            />
+          </div>
+        </div>
       </div>
     </>
   );
