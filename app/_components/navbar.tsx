@@ -112,7 +112,14 @@ const Navbar = () => {
 
             {/* BOTÃO DE USUÁRIO DENTRO DO MENU */}
             <div className="mt-6 border-t pt-4">
-              <UserButton showName />
+              <UserButton
+                showName
+                appearance={{
+                  elements: {
+                    userButtonPopoverCard: { pointerEvents: "initial" },
+                  },
+                }}
+              />
             </div>
           </SheetContent>
         </Sheet>
