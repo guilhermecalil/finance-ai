@@ -59,7 +59,8 @@ export const POST = async (request: Request) => {
       await db.user.update({
         where: { id: userId },
         data: {
-          stripeCustomerId: customer,
+          stripeCustomerId:
+            typeof customer === "string" ? customer : customer?.id,
           stripeSubscriptionId: subscriptionId,
           subscriptionPlan,
         },
