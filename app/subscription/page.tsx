@@ -1,6 +1,10 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
-import { CheckIcon, XIcon } from "lucide-react";
+import { db } from "@/app/_lib/prisma";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+
+import { CheckIcon, XIcon } from "lucide-react";
+
 import Navbar from "../_components/navbar";
 import { Badge } from "../_components/ui/badge";
 import { Card, CardContent, CardHeader } from "../_components/ui/card";
@@ -8,18 +12,24 @@ import { getCurrenceMonthTransactions } from "../_data/get-current-month-transac
 import AcquirePlanButton from "./_components/acquire-plan-button";
 
 const SubscriptionPage = async () => {
-  const { userId } = await auth();
+  const session = await getServerSession(authOptions);
 
-  if (!userId) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 
-  const user = await clerkClient().users.getUser(userId);
+  const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      subscriptionPlan: true,
+    },
+  });
+
   const currentMonthTransactions = await getCurrenceMonthTransactions();
-  const hasPremiumPlan = user.publicMetadata.subscriptionPlan === "premium";
-  const hasEssencialPlan = user.publicMetadata.subscriptionPlan === "essencial";
-  const hasElitePlan = user.publicMetadata.subscriptionPlan === "elite";
-  // const hasFreePlan = user.publicMetadata.subscriptionPlan === null;
+
+  const hasPremiumPlan = user?.subscriptionPlan === "premium";
+  const hasEssencialPlan = user?.subscriptionPlan === "essencial";
+  const hasElitePlan = user?.subscriptionPlan === "elite";
 
   return (
     <>
@@ -30,14 +40,10 @@ const SubscriptionPage = async () => {
         </h1>
 
         <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
+          {/* Cards dos planos */}
           {/* Plano Básico */}
           <Card className="w-full max-w-[450px]">
             <CardHeader className="border-b border-solid py-8">
-              {/* {hasFreePlan && (
-                <Badge className="absolute left-4 top-12 bg-primary/10 text-primary">
-                  Ativo
-                </Badge>
-              )} */}
               <h2 className="text-center text-2xl font-semibold">
                 Plano Básico
               </h2>
@@ -47,7 +53,6 @@ const SubscriptionPage = async () => {
                 <span className="text-2xl text-muted-foreground">/mês</span>
               </div>
             </CardHeader>
-
             <CardContent className="space-y-6 py-8">
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
@@ -78,6 +83,7 @@ const SubscriptionPage = async () => {
             </CardContent>
           </Card>
 
+          {/* Plano Essencial */}
           <Card className="w-full max-w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
               {hasEssencialPlan && (
@@ -94,7 +100,6 @@ const SubscriptionPage = async () => {
                 <span className="text-2xl text-muted-foreground">/mês</span>
               </div>
             </CardHeader>
-
             <CardContent className="space-y-6 py-8">
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
@@ -120,7 +125,7 @@ const SubscriptionPage = async () => {
                 <XIcon />
                 <p>Acesso antecipado a novos recursos</p>
               </div>
-              <AcquirePlanButton planType={"essencial"} />
+              <AcquirePlanButton planType="essencial" />
             </CardContent>
           </Card>
 
@@ -141,7 +146,6 @@ const SubscriptionPage = async () => {
                 <span className="text-2xl text-muted-foreground">/mês</span>
               </div>
             </CardHeader>
-
             <CardContent className="space-y-6 py-8">
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
@@ -158,7 +162,7 @@ const SubscriptionPage = async () => {
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
                 <p>
-                  Chatbot via WhatsApp
+                  Chatbot via WhatsApp{" "}
                   <span className="font-bold">
                     (limite de 50 transações/mês)
                   </span>
@@ -172,10 +176,11 @@ const SubscriptionPage = async () => {
                 <CheckIcon className="text-primary" />
                 <p>Acesso antecipado a novos recursos</p>
               </div>
-              <AcquirePlanButton planType={"premium"} />
+              <AcquirePlanButton planType="premium" />
             </CardContent>
           </Card>
 
+          {/* Plano Elite */}
           <Card className="w-full max-w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
               {hasElitePlan && (
@@ -192,7 +197,6 @@ const SubscriptionPage = async () => {
                 <span className="text-2xl text-muted-foreground">/mês</span>
               </div>
             </CardHeader>
-
             <CardContent className="space-y-6 py-8">
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
@@ -205,7 +209,7 @@ const SubscriptionPage = async () => {
               <div className="flex items-center gap-2">
                 <CheckIcon className="text-primary" />
                 <p>
-                  Relatórios financeiros
+                  Relatórios financeiros{" "}
                   <span className="font-bold">(COM IA AVANÇADA)</span>
                 </p>
               </div>
@@ -221,7 +225,7 @@ const SubscriptionPage = async () => {
                 <CheckIcon className="text-primary" />
                 <p>Acesso antecipado a novos recursos</p>
               </div>
-              <AcquirePlanButton planType={"elite"} />
+              <AcquirePlanButton planType="elite" />
             </CardContent>
           </Card>
         </div>

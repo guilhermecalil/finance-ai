@@ -1,12 +1,13 @@
 "use server";
 
 import { db } from "@/app/_lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import {
   TransactionCategory,
   TransactionPaymentMethod,
   TransactionType,
 } from "@prisma/client";
+import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { upsertTransactionSchema } from "./schema";
 
@@ -22,10 +23,15 @@ interface UpsertTransactionParams {
 
 export const upsertTransaction = async (params: UpsertTransactionParams) => {
   upsertTransactionSchema.parse(params);
-  const { userId } = await auth();
-  if (!userId) {
+
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
     throw new Error("Unauthorized");
   }
+
+  const userId = session.user.id;
+
   await db.transaction.upsert({
     update: { ...params, userId },
     create: { ...params, userId },
@@ -33,5 +39,6 @@ export const upsertTransaction = async (params: UpsertTransactionParams) => {
       id: params?.id ?? "",
     },
   });
+
   revalidatePath("/transactions");
 };

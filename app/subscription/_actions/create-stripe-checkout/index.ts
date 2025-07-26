@@ -1,14 +1,15 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+import { getServerSession } from "next-auth";
 import Stripe from "stripe";
 
 export const createStripeCheckout = async (
   planType: "premium" | "elite" | "essencial",
 ) => {
-  const { userId } = await auth();
+  const session = await getServerSession(authOptions);
 
-  if (!userId) {
+  if (!session?.user?.id) {
     throw new Error("Usuário não autenticado");
   }
 
@@ -17,10 +18,9 @@ export const createStripeCheckout = async (
   }
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2024-10-28.acacia",
+    apiVersion: "2025-02-24.acacia",
   });
 
-  // Mapeia o plano selecionado para o ID correto
   const planPrices: Record<string, string | undefined> = {
     premium: process.env.STRIPE_PREMIUM_PLAN_PRICE_ID,
     elite: process.env.STRIPE_ELITE_PLAN_PRICE_ID,
@@ -33,14 +33,14 @@ export const createStripeCheckout = async (
     throw new Error("Plano inválido");
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const sessionStripe = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "subscription",
     success_url: process.env.APP_URL,
     cancel_url: process.env.APP_URL,
     subscription_data: {
       metadata: {
-        clerk_user_id: userId,
+        user_id: session.user.id,
       },
     },
     line_items: [
@@ -51,5 +51,5 @@ export const createStripeCheckout = async (
     ],
   });
 
-  return { sessionId: session.id };
+  return { sessionId: sessionStripe.id };
 };
