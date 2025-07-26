@@ -1,4 +1,4 @@
-import { clerkClient } from "@clerk/nextjs/server";
+import { db } from "@/app/_lib/prisma";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -15,41 +15,39 @@ export const POST = async (request: Request) => {
   const text = await request.text();
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2024-10-28.acacia",
+    apiVersion: "2025-02-24.acacia",
   });
 
-  const event = stripe.webhooks.constructEvent(
-    text,
-    signature,
-    process.env.STRIPE_WEBHOOK_SECRET,
-  );
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      text,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET,
+    );
+  } catch (err) {
+    console.error("Erro no webhook:", err);
+    return NextResponse.error();
+  }
 
   switch (event.type) {
     case "invoice.paid": {
       const { customer, subscription } = event.data.object;
-
-      // Garantir que subscription seja uma string (ID)
       const subscriptionId =
         typeof subscription === "string" ? subscription : subscription?.id;
 
-      if (!subscriptionId) {
-        return NextResponse.error();
-      }
+      if (!subscriptionId) return NextResponse.error();
 
-      // Buscar detalhes da assinatura no Stripe
       const subscriptionDetails =
         await stripe.subscriptions.retrieve(subscriptionId);
+      const userId = subscriptionDetails.metadata?.user_id;
 
-      const clerkUserId = subscriptionDetails.metadata?.clerk_user_id;
-      if (!clerkUserId) {
-        return NextResponse.error();
-      }
+      if (!userId) return NextResponse.error();
 
-      // Pegando o plano adquirido
       const priceId = subscriptionDetails.items.data[0]?.price.id;
 
-      let subscriptionPlan = null; // Padrão para evitar erro
-
+      let subscriptionPlan = null;
       if (priceId === process.env.STRIPE_PREMIUM_PLAN_PRICE_ID) {
         subscriptionPlan = "premium";
       } else if (priceId === process.env.STRIPE_ELITE_PLAN_PRICE_ID) {
@@ -58,12 +56,11 @@ export const POST = async (request: Request) => {
         subscriptionPlan = "essencial";
       }
 
-      await clerkClient.users.updateUser(clerkUserId, {
-        privateMetadata: {
+      await db.user.update({
+        where: { id: userId },
+        data: {
           stripeCustomerId: customer,
-          stripeSubscriptionId: subscriptionId, // Agora garantido como string
-        },
-        publicMetadata: {
+          stripeSubscriptionId: subscriptionId,
           subscriptionPlan,
         },
       });
@@ -72,25 +69,22 @@ export const POST = async (request: Request) => {
     }
 
     case "customer.subscription.deleted": {
-      // Remover plano do usuário
       const subscription = await stripe.subscriptions.retrieve(
         event.data.object.id,
       );
 
-      const clerkUserId = subscription.metadata?.clerk_user_id;
-      if (!clerkUserId) {
-        return NextResponse.error();
-      }
+      const userId = subscription.metadata?.user_id;
+      if (!userId) return NextResponse.error();
 
-      await clerkClient.users.updateUser(clerkUserId, {
-        privateMetadata: {
+      await db.user.update({
+        where: { id: userId },
+        data: {
           stripeCustomerId: null,
           stripeSubscriptionId: null,
-        },
-        publicMetadata: {
           subscriptionPlan: null,
         },
       });
+
       break;
     }
   }

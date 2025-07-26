@@ -1,4 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import AddTransactionButton from "../_components/add-transaction-button";
 import Navbar from "../_components/navbar";
@@ -8,11 +9,13 @@ import { db } from "../_lib/prisma";
 import { transactionColumns } from "./_columns";
 
 const TransactionsPage = async () => {
-  const { userId } = await auth();
+  const session = await getServerSession(authOptions);
 
-  if (!userId) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
+
+  const userId = session.user.id;
 
   const transactions = await db.transaction.findMany({
     where: {
@@ -38,7 +41,6 @@ const TransactionsPage = async () => {
         {/* Contêiner para rolagem horizontal com width ajustado */}
         <div className="overflow-x-auto">
           <div className="min-w-[1200px]">
-            {" "}
             {/* Definindo a largura mínima da tabela */}
             <DataTable
               columns={transactionColumns}

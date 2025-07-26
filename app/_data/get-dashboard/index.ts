@@ -1,20 +1,24 @@
 import { db } from "@/app/_lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { TransactionType } from "@prisma/client";
+import { getServerSession } from "next-auth";
 import { TotalExpensePerCategory, TransactionPercentagePerType } from "./type";
 
 export const getDashboard = async (month: string) => {
-  const { userId } = await auth();
-  if (!userId) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user?.id) {
     throw new Error("Unauthorized");
   }
+  const userId = session.user.id;
+
   const where = {
     userId,
     date: {
-      gte: new Date(new Date().getFullYear(), parseInt(month) - 1, 1), // Calcula o primeiro dia do mês dinamicamente
-      lt: new Date(new Date().getFullYear(), parseInt(month), 1), // Calcula o primeiro dia do próximo mês
+      gte: new Date(new Date().getFullYear(), parseInt(month) - 1, 1),
+      lt: new Date(new Date().getFullYear(), parseInt(month), 1),
     },
   };
+
   const depositsTotal = Number(
     (
       await db.transaction.aggregate({
@@ -23,6 +27,7 @@ export const getDashboard = async (month: string) => {
       })
     )?._sum?.amount,
   );
+
   const investmentsTotal = Number(
     (
       await db.transaction.aggregate({
@@ -31,6 +36,7 @@ export const getDashboard = async (month: string) => {
       })
     )?._sum?.amount,
   );
+
   const expensesTotal = Number(
     (
       await db.transaction.aggregate({
@@ -39,7 +45,9 @@ export const getDashboard = async (month: string) => {
       })
     )?._sum?.amount,
   );
+
   const balance = depositsTotal - investmentsTotal - expensesTotal;
+
   const transactionsTotal = Number(
     (
       await db.transaction.aggregate({
@@ -48,6 +56,7 @@ export const getDashboard = async (month: string) => {
       })
     )._sum.amount,
   );
+
   const typesPercentage: TransactionPercentagePerType = {
     [TransactionType.DEPOSIT]: Math.round(
       (Number(depositsTotal || 0) / Number(transactionsTotal)) * 100,
