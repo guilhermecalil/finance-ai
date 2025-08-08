@@ -4,6 +4,7 @@ import type { Variants } from "framer-motion";
 import { AnimatePresence, motion } from "framer-motion";
 import { Chrome, LogInIcon } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -39,6 +40,8 @@ export default function LoginPage() {
   const [displayedText, setDisplayedText] = useState("");
   const [textIndex, setTextIndex] = useState(0);
   const [typing, setTyping] = useState(true);
+
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -122,16 +125,21 @@ export default function LoginPage() {
   // Quando isRegistering true, form entra da direita (x=50), senão da esquerda (x=-50)
   const direction = isRegistering ? 1 : -1;
 
+  const logoSrc =
+    resolvedTheme === "light" ? "/logo-lightMode.svg" : "/logo.svg";
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
       <div className="w-full max-w-md rounded-lg border border-muted p-8 shadow-md">
         {/* Logo */}
         <div className="mb-4 flex justify-center">
           <Image
-            src="/logo.svg"
-            width={173}
-            height={39}
-            alt="Logo Finance AI"
+            src={logoSrc}
+            alt="MoneyVision logo"
+            width={165}
+            height={50}
+            priority
+            className="select-none transition-opacity duration-300"
           />
         </div>
 
