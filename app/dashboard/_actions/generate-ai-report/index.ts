@@ -4,10 +4,8 @@ import { db } from "@/app/_lib/prisma";
 import OpenAI from "openai";
 import { GenerateAiReportSchema, generateAiReportSchema } from "./schema";
 
-// 🔁 Aqui você deve substituir por sua lógica de autenticação real
-import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"; // ajuste para onde está seu config
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { getServerSession } from "next-auth";
-// OU implemente algo como: import { auth } from "@/lib/auth"; se for algo customizado
 
 const DUMMY_REPORT = `### Relatório de Finanças Pessoais
 
@@ -55,7 +53,6 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
 
   const subscriptionPlan = session.user.subscriptionPlan;
 
-  // Você pode ajustar isso para vir do banco de dados ou session.user diretamente
   if (
     typeof subscriptionPlan !== "string" ||
     !["elite", "premium", "essencial"].includes(subscriptionPlan)
@@ -65,7 +62,6 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
     );
   }
 
-  // Fallback se não tiver OpenAI KEY
   if (!process.env.OPENAI_API_KEY) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     return DUMMY_REPORT;

@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${manrope.className} dark antialiased`}>
+    <html lang="pt-br" suppressHydrationWarning>
+      <body className={`${manrope.className}`}>
         <Providers>{children}</Providers>
       </body>
     </html>

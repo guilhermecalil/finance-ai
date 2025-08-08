@@ -117,7 +117,7 @@ const UpsertTransactionDialog = ({
       }}
     >
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="max-h-[80vh] max-w-full gap-4 overflow-y-auto p-4 sm:max-h-[90vh] sm:w-full sm:max-w-[400px] sm:max-w-lg sm:p-6 md:max-w-[600px]">
+      <DialogContent className="max-h-[80vh] max-w-full gap-4 overflow-y-auto p-4 sm:max-h-[90vh] sm:w-full sm:max-w-lg sm:p-6 md:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
             {isUpdate ? "Atualizar" : "Criar"} transação

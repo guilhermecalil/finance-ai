@@ -96,26 +96,27 @@ body {
 
 @layer base {
   :root {
-    --background: 222 40% 10%; /* Azul petróleo escuro */
-    --foreground: 240 10% 95%;
-    --card: transparent;
-    --card-foreground: 240 10% 95%;
-    --popover: 222 40% 12%;
-    --popover-foreground: 240 10% 95%;
-    --primary: 152 70% 45%; /* Verde vibrante para ganhos */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 20% 30%; /* Azul escuro para equilíbrio */
-    --secondary-foreground: 240 10% 95%;
-    --muted: 220 10% 40%;
-    --muted-foreground: 220 10% 70%;
-    --accent: 40 90% 50%; /* Amarelo ouro para chamar atenção */
-    --accent-foreground: 240 10% 10%;
-    --destructive: 355 75% 50%; /* Vermelho intenso para alertas */
+    --background: 0 0% 98%; /* off-white clarinho */
+    --foreground: 210 15% 15%; /* azul escuro para texto */
+    --card: 0 0% 100%; /* branco puro para cards */
+    --card-foreground: 210 10% 10%; /* texto escuro para cards */
+    --popover: 0 0% 96%; /* fundo popover clarinho */
+    --popover-foreground: 210 15% 15%;
+    --primary: 146 52% 32%; /* verde vibrante */
+    --primary-foreground: 0 0% 100%; /* texto branco nos botões primários */
+    --secondary: 210 30% 60%;
+    --secondary-foreground: 210 15% 15%;
+    --muted: 210 10% 70%;
+    --muted-foreground: 210 10% 40%;
+    --accent: 40 90% 50%;
+    --accent-foreground: 0 0% 10%;
+    --destructive: 355 75% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 20% 25%;
-    --input: 220 20% 25%;
+    --border: 210 15% 70%; /* bordas suaves claras */
+    --input: 210 20% 90%; /* fundos de inputs claros */
     --ring: 152 70% 45%;
     --radius: 0.5rem;
+    /* cores de gráfico podem ficar */
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -185,4 +186,8 @@ body {
 /* Scroll para o eixo vertical */
 ::-webkit-scrollbar-vertical {
   width: 8px; /* Espessura do scroll vertical */
+}
+
+html {
+  scroll-behavior: smooth;
 }
